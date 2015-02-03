@@ -23,7 +23,7 @@ class Case
 		this.y = b;
 	}
 
-	bool getvisited()
+	bool getVisited()
 	{
 		return visited;
 	}
