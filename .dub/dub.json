@@ -1,6 +1,8 @@
 {
 	"dub": {
-		"cachedUpgrades": {},
-		"lastUpgrade": "2015-02-03T14:27:39.7829559"
+		"cachedUpgrades": {
+			"dsfml": "~master"
+		},
+		"lastUpgrade": "2015-02-06T10:22:46.3559881"
 	}
 }

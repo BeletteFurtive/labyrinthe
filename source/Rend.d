@@ -128,6 +128,7 @@ class Rend : Drawable, Transformable
 		}
 		return m_transform;
 	}
+	
 /**
  *Move the object by a given offset.
  *
@@ -152,32 +153,40 @@ class Rend : Drawable, Transformable
 	bool load(string tileset, Vector2u tileSize, Labyrinthe l, int windowWidht, int windowHeight)
 	{
 		
-		auto textureMap = new Texture();
 		if(!m_tileset.loadFromFile(tileset))
 		{
 			return false;			
 		}
+
+		int labWidth = (windowWidht/tileSize.x);
+		int labHeight = (windowHeight/tileSize.y);
 		
 		m_vertice.primativeType = PrimitiveType.Quads;
-		m_vertice.resize((windowWidht/tileSize.x)*(windowHeight/tileSize.y)*4);
+		m_vertice.resize((labWidth)*(labHeight)*4);
 
-		for(int i=0; i<(windowHeight/tileSize.x);i++ )
+
+		for(int i=0; i<(labWidth);i++ )
 		{
-			for(int j=0; j<(windowWidht/tileSize.y);j++ )
+			for(int j=0; j<(labHeight);j++ )
 			{
 				int tileNumber;
-				if(l.lab[i][j].getVisited())
-				{
-					tileNumber = 1;
-				}
-				else
+				//if(l.lab[i][j].getVisited())
+				if(cast(Path)(l.lab[i][j]))
 				{
 					tileNumber = 0;
 				}
-				
+				else if(cast(Wall)(l.lab[i][j]))
+				{
+					tileNumber = 1;
+					if(j < (labHeight)-1 && cast(Wall)(l.lab[i][j+1]))
+					{
+						tileNumber = 2;
+					}
+				}
+					
 				int tu=tileNumber % (m_tileset.getSize().x/tileSize.x);
 				int tv=tileNumber / (m_tileset.getSize().x/tileSize.x);
-				Vertex *quad = &m_vertice[(i + j * (windowHeight/tileSize.x)) * 4];
+				Vertex *quad = &m_vertice[(i + j * (windowWidht/tileSize.x)) * 4];
 
 				quad[0].position = Vector2f(i*tileSize.x, j*tileSize.y);
 				quad[1].position = Vector2f((i+1)*tileSize.x, j*tileSize.y);
@@ -203,6 +212,7 @@ class Rend : Drawable, Transformable
 		renderTarget.draw(m_vertice, renderStates);
 		
 	}
+
 
 	
 }

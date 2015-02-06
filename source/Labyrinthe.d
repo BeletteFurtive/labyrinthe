@@ -7,7 +7,8 @@ import std.algorithm;
 import std.process;
 import core.thread;
 import Case;
-
+import Path;
+import Wall;
 
 class Labyrinthe
 {
@@ -45,12 +46,13 @@ class Labyrinthe
 		{			
 			for(int j=0; j<this.tab_lab[i].length; j++)
 			{
-				tab_lab[i][j] = new Case();
+				tab_lab[i][j] = new Wall();
 				tab_lab[i][j].setPosition(i, j);
 			}			
 		}
 		visits = [tab_lab[1][1]];
-		lab[1][1].setVisited();
+		tab_lab[1][1] = new Path(tab_lab[1][1]);
+		tab_lab[1][1].setVisited();
 	}
 
 	void generate()
@@ -69,10 +71,10 @@ class Labyrinthe
 	
 
 		auto rand = uniform(0, 4);
-
+		
 		x = visits.front.getX();
 		y = visits.front.getY();
-
+		
 			
 		if(y+2 < tab_lab[0].length-1)
 			south = tab_lab[x][y+2].getVisited();
@@ -109,6 +111,8 @@ class Labyrinthe
 			{
 				if(!south)
 				{
+					tab_lab[x][y+1] = new Path(tab_lab[x][y+1]);
+					tab_lab[x][y+2] = new Path(tab_lab[x][y+2]);
 					tab_lab[x][y+1].setVisited();
 					tab_lab[x][y+2].setVisited();
 					y+=2;
@@ -121,6 +125,8 @@ class Labyrinthe
 			{
 				if(!east)
 				{
+					tab_lab[x+1][y] = new Path(tab_lab[x+1][y]);
+					tab_lab[x+2][y] = new Path(tab_lab[x+2][y]);
 					tab_lab[x+1][y].setVisited();
 					tab_lab[x+2][y].setVisited();
 					x += 2;
@@ -134,6 +140,9 @@ class Labyrinthe
 			{
 				if(!north)
 				{
+
+					tab_lab[x][y-1] = new Path(tab_lab[x][y-1]);
+					tab_lab[x][y-2] = new Path(tab_lab[x][y-2]);
 					tab_lab[x][y-1].setVisited();
 					tab_lab[x][y-2].setVisited();
 					y -= 2;
@@ -147,13 +156,13 @@ class Labyrinthe
 			{
 				if(!west)
 				{
+					tab_lab[x-1][y] = new Path(tab_lab[x-1][y]);
+					tab_lab[x-2][y] = new Path(tab_lab[x-2][y]);
 					tab_lab[x-1][y].setVisited();
 					tab_lab[x-2][y].setVisited();
 					x -= 2;
-					visits = tab_lab[x][y] ~ visits;
-												
-				}
-				
+					visits = tab_lab[x][y] ~ visits;	
+				}				
 			}
 			//Thread.sleep( dur!("msecs")( 50 ) );
 			//system("clear");
